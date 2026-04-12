@@ -6,7 +6,7 @@ metadata:
 data:
   default.conf: |
     server {
-        listen 8080;
+        listen 80;
         server_name localhost;
         location / {
             root   /usr/share/nginx/html;
@@ -140,7 +140,7 @@ metadata:
 data:
   default.conf: |
     server {
-        listen 8080;
+        listen 80;
         server_name localhost;
         location / {
             root   /usr/share/nginx/html;

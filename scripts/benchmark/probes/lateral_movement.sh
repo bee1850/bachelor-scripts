@@ -83,7 +83,7 @@ run_third_audit() {
 }
 
 case "$LAYER_NAME" in
-  layer_2|layer_3)
+  layer_1|layer_2|layer_3)
     run_third_audit
     ;;
   *)
