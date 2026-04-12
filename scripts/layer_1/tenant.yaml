@@ -1,0 +1,21 @@
+apiVersion: capsule.clastix.io/v1beta2
+kind: Tenant
+metadata:
+  name: tenant-a
+spec:
+  owners:
+  - name: alice
+    kind: User
+  namespaceOptions:
+    quota: 2
+---
+apiVersion: capsule.clastix.io/v1beta2
+kind: Tenant
+metadata:
+  name: tenant-b
+spec:
+  owners:
+  - name: bob
+    kind: User
+  namespaceOptions:
+    quota: 2

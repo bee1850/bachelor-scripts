@@ -1,0 +1,36 @@
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: enforce-layer3-zero-trust
+  annotations:
+    description: "Thesis Layer 3: eBPF runtime enforcement blocking unauthorized execution"
+spec:
+  podSelector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - nginx
+          - postgres
+  kprobes:
+    - call: "sys_execve"
+      syscall: true
+      args:
+        - index: 0
+          type: "string"
+      selectors:
+        - matchArgs:
+            - index: 0
+              operator: "Equal"
+              values:
+                - "/bin/nc"
+                - "/bin/uname"
+                - "/sbin/apk"
+                - "/usr/bin/apt"
+                - "/usr/bin/curl"
+                - "/usr/bin/nc"
+                - "/usr/bin/unshare"
+                - "/usr/bin/wget"
+                - "/usr/sbin/chroot"
+          matchActions:
+            - action: Sigkill

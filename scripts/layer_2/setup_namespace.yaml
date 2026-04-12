@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-a-frontend
+  annotations:
+    capsule.clastix.io/tenant: tenant-a
+  labels:
+    capsule.clastix.io/tenant: tenant-a
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-a-backend
+  annotations:
+    capsule.clastix.io/tenant: tenant-a
+  labels:
+    capsule.clastix.io/tenant: tenant-a
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-b-frontend
+  annotations:
+    capsule.clastix.io/tenant: tenant-b
+  labels:
+    capsule.clastix.io/tenant: tenant-b
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tenant-b-backend
+  annotations:
+    capsule.clastix.io/tenant: tenant-b
+  labels:
+    capsule.clastix.io/tenant: tenant-b
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest

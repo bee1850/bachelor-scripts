@@ -1,0 +1,231 @@
+apiVersion: capsule.clastix.io/v1beta2
+kind: TenantResource
+metadata:
+  name: tenant-a-resources
+  namespace: tenant-a-frontend
+spec:
+  resyncPeriod: 60s
+  resources:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: tenant-a-frontend
+      rawItems:
+        # LimitRange
+        - apiVersion: v1
+          kind: LimitRange
+          metadata:
+            name: cpu-resource-constraint
+          spec:
+            limits:
+            - default:
+                memory: "256Mi"
+                cpu: 500m
+              defaultRequest:
+                memory: "128Mi"
+                cpu: 250m
+              max:
+                memory: "256Mi"
+                cpu: 500m
+              type: Container
+        # NetworkPolicy
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: base-isolation-policy
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            - Egress
+            ingress:
+            # Allow intra-namespace traffic strictly
+            - from:
+              - podSelector: {}
+            - from:
+              - ipBlock:
+                  cidr: 10.8.159.0/24 # ESG Switch
+            - from:
+              - ipBlock:
+                  cidr: 192.168.0.0/24 # Home Network
+            egress:
+            # Allow intra-namespace traffic strictly
+            - to:
+              - podSelector: {}
+            - to:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              ports:
+              - protocol: UDP
+                port: 53
+---
+apiVersion: capsule.clastix.io/v1beta2
+kind: TenantResource
+metadata:
+  name: tenant-a-resources
+  namespace: tenant-a-backend
+spec:
+  resyncPeriod: 60s
+  resources:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: tenant-a-backend
+      rawItems:
+        # LimitRange
+        - apiVersion: v1
+          kind: LimitRange
+          metadata:
+            name: cpu-resource-constraint
+          spec:
+            limits:
+            - default:
+                memory: "512Mi"
+                cpu: 1000m
+              defaultRequest:
+                memory: "128Mi"
+                cpu: 250m
+              max:
+                memory: "512Mi"
+                cpu: 1000m
+              type: Container
+        # NetworkPolicy
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: base-isolation-policy
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            - Egress
+            ingress:
+            - from:
+              - podSelector: {}
+            - from:
+              - ipBlock:
+                  cidr: 10.8.159.0/24 # ESG Switch
+            - from:
+              - ipBlock:
+                  cidr: 192.168.0.0/24 # Home Network
+            egress:
+            - to:
+              - podSelector: {}
+            - to:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              ports:
+              - protocol: UDP
+                port: 53
+---
+apiVersion: capsule.clastix.io/v1beta2
+kind: TenantResource
+metadata:
+  name: tenant-b-resources
+  namespace: tenant-b-frontend
+spec:
+  resyncPeriod: 60s
+  resources:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: tenant-b-frontend
+      rawItems:
+        # LimitRange
+        - apiVersion: v1
+          kind: LimitRange
+          metadata:
+            name: cpu-resource-constraint
+          spec:
+            limits:
+            - default:
+                memory: "256Mi"
+                cpu: 500m
+              defaultRequest:
+                memory: "128Mi"
+                cpu: 250m
+              max:
+                memory: "256Mi"
+                cpu: 500m
+              type: Container
+        # NetworkPolicy
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: base-isolation-policy
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            - Egress
+            ingress:
+            - from:
+              - podSelector: {}
+            - from:
+              - ipBlock:
+                  cidr: 10.8.159.0/24 # Local Network
+            egress:
+            - to:
+              - podSelector: {}
+            - to:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              ports:
+              - protocol: UDP
+                port: 53
+---
+apiVersion: capsule.clastix.io/v1beta2
+kind: TenantResource
+metadata:
+  name: tenant-b-resources
+  namespace: tenant-b-backend
+spec:
+  resyncPeriod: 60s
+  resources:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: tenant-b-backend
+      rawItems:
+        # LimitRange
+        - apiVersion: v1
+          kind: LimitRange
+          metadata:
+            name: cpu-resource-constraint
+          spec:
+            limits:
+            - default:
+                memory: "512Mi"
+                cpu: 1000m
+              defaultRequest:
+                memory: "128Mi"
+                cpu: 250m
+              max:
+                memory: "512Mi"
+                cpu: 1000m
+              type: Container
+        # NetworkPolicy
+        - apiVersion: networking.k8s.io/v1
+          kind: NetworkPolicy
+          metadata:
+            name: base-isolation-policy
+          spec:
+            podSelector: {}
+            policyTypes:
+            - Ingress
+            - Egress
+            ingress:
+            - from:
+              - podSelector: {}
+            - from:
+              - ipBlock:
+                  cidr: 10.8.159.0/24 # Local Network
+            egress:
+            - to:
+              - podSelector: {}
+            - to:
+              - namespaceSelector:
+                  matchLabels:
+                    kubernetes.io/metadata.name: kube-system
+              ports:
+              - protocol: UDP
+                port: 53
