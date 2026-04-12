@@ -4,11 +4,11 @@
 
 # Map the LAYER_NAME to the appropriate expected security properties for the audit report
 case "$LAYER_NAME" in
-  baseline)
-    INFO_CAP="Baseline: For gVisor, this should show no Capabilities. containerD will show all default capabilities granted to containers."
+  baseline|layer_1)
+    INFO_CAP="Baseline and Layer 1: containerd typically exposes default capabilities; gVisor may reduce effective capabilities depending on runtime behavior."
     ;;
-  layer_1|layer_2|layer_3)
-    INFO_CAP="Layers 1-3: Capabilties should be dropped in layers 1-3, so this should show no capabilities."
+  layer_2|layer_3)
+    INFO_CAP="Layers 2-3: Workload securityContext drops all Linux capabilities, so effective capabilities should be empty."
     ;;
   *)
     log_audit_probe "[!] ERROR: Unknown LAYER_NAME: $LAYER_NAME"

@@ -41,10 +41,10 @@ log_audit_probe "----------------------------------------------------"
 # --------------------------------------------------------------------------
 log_audit_probe "[+] Probe - Intra-Tenant Lateral Movement B (Postgres -> Nginx)"
 case "$LAYER_NAME" in
-  baseline)
+  baseline|layer_1)
     LATERAL_OUT_B=$(ssh -q "$TARGET_USER"@"$TARGET_IP" "kubectl exec -n $NS_BACK $POSTGRES_POD -- wget -S -T 3 -O /dev/null http://$NGINX_IP:80" 2>&1)
     ;;
-  layer_1|layer_2|layer_3)
+  layer_2|layer_3)
     LATERAL_OUT_B=$(ssh -q "$TARGET_USER"@"$TARGET_IP" "kubectl exec -n $NS_BACK $POSTGRES_POD -- nc -zv -w 3 $NGINX_IP 8080" 2>&1)
     ;;
   *)
@@ -67,7 +67,15 @@ log_audit_probe "----------------------------------------------------"
 
 run_third_audit() {
     log_audit_probe "[+] Probe - Inter-Tenant Lateral Movement (Tenant-A Nginx -> Tenant-B Nginx)"
-    LATERAL_OUT_C=$(ssh -q "$TARGET_USER"@"$TARGET_IP" "kubectl exec -n $NS_FRONT $NGINX_POD -- nc -zv -w 3 $NGINX_B_IP 8080" 2>&1)
+    case "$LAYER_NAME" in
+      layer_1)
+        TARGET_PORT=80
+        ;;
+      *)
+        TARGET_PORT=8080
+        ;;
+    esac
+    LATERAL_OUT_C=$(ssh -q "$TARGET_USER"@"$TARGET_IP" "kubectl exec -n $NS_FRONT $NGINX_POD -- nc -zv -w 3 $NGINX_B_IP $TARGET_PORT" 2>&1)
     log_audit_probe "INFO: Inter Tenant Lateral Movement should be prevented through Network Policies and Capsule Namespace Isolation."
     log_audit_probe "$LATERAL_OUT_C"
 

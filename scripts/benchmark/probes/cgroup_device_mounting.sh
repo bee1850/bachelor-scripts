@@ -3,11 +3,11 @@
 . "$(dirname "$0")/generic.sh"
 
 case "$LAYER_NAME" in
-  baseline)
+  baseline|layer_1)
     INFO_CDM="Baseline: For standard containerd, mounting might be prevented unless the pod is privileged, but cgroup information leaks can occur. gVisor fully sandboxes the mount space."
     ;;
-  layer_1|layer_2|layer_3)
-    INFO_CDM="Layers 1-3: Pod Security Standards strictly prohibit CAP_SYS_ADMIN, explicitly blocking unauthorized mount syscalls."
+  layer_2|layer_3)
+    INFO_CDM="Layers 2-3: Pod Security labels and workload hardening reduce mount-related abuse by removing privileges and blocking unsafe pod specs."
     ;;
   *)
     log_audit_probe "[!] ERROR: Unknown LAYER_NAME: $LAYER_NAME"

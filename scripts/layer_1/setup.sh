@@ -49,12 +49,6 @@ create_ns_idempotent "$ALICE_KUBE" "tenant-a-backend"
 create_ns_idempotent "$BOB_KUBE" "tenant-b-frontend"
 create_ns_idempotent "$BOB_KUBE" "tenant-b-backend"
 
-# Apply Pod Security Labels (Admission controller will handle this as admin)
-echo "Applying Pod Security labels..."
-for ns in tenant-a-frontend tenant-a-backend tenant-b-frontend tenant-b-backend; do
-    kubectl label namespace $ns pod-security.kubernetes.io/enforce=baseline pod-security.kubernetes.io/enforce-version=latest --overwrite
-done
-
 # Verify Capsule Adoption
 echo "Verifying Capsule Adoption..."
 sleep 5

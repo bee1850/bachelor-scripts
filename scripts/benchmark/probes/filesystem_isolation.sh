@@ -7,7 +7,7 @@ case "$LAYER_NAME" in
     INFO_FS="Baseline and Layer 1: Root filesystem is likely writable."
     ;;
   layer_2|layer_3)
-    INFO_FS="Layers 2-3: Root filesystem should be read-only (readOnlyRootFilesystem: true) based on Pod Security Standards."
+    INFO_FS="Layers 2-3: Root filesystem may still be writable unless readOnlyRootFilesystem is explicitly set in the workload securityContext."
     ;;
   *)
     log_audit_probe "[!] ERROR: Unknown LAYER_NAME: $LAYER_NAME"
