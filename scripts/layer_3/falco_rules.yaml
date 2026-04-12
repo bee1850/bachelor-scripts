@@ -1,0 +1,37 @@
+
+customRules:
+  custom-rules.yaml: |-
+    - macro: container
+      condition: container.id != host and
+        not proc.name startswith "runc" and
+        not proc.name in (docker-runc, containerd-shim, exe)
+
+    - macro: changeroot
+      condition: (evt.type = chroot) or (evt.type = pivot_root)
+
+    - macro: mount
+      condition: evt.type in (mount)
+
+    - rule: container_escape_attempt
+      desc: Detect attempts to escape container isolation using chroot or pivot_root
+      condition: container and changeroot
+      output: "Container escape attempt detected (command=%proc.cmdline)"
+      priority: WARNING
+
+    - rule: unauthorized_mount
+      desc: Detect suspicious mount attempts within containers not related to expected container runtime operations
+      condition: container and mount
+      output: "Suspicious mount attempt detected (command=%proc.cmdline)"
+      priority: WARNING
+
+    - rule: change_thread_namespace
+      desc: a container attempts to create a new namespace or change its namespace (e.g., using setns)
+      condition: container and (syscall.type = setns or syscall.type = unshare)
+      output: "Namespace change (setns) by unexpected program | user=%user.name command=%proc.cmdline container=%container.id"
+      priority: WARNING
+
+    - rule: run_suspicious_process_in_container
+      desc: Detect execution of netcat, wget, nmap or similar tools within containers, which may indicate reconnaissance or data exfiltration attempts
+      condition: container and proc.name in (netcat, nc, wget, curl, nmap)
+      output: "Suspicious process execution in container (command=%proc.cmdline) | user=%user.name container=%container.id"
+      priority: WARNING

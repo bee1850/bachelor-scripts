@@ -1,0 +1,29 @@
+apiVersion: capsule.clastix.io/v1beta2
+kind: Tenant
+metadata:
+  name: tenant-a
+spec:
+  owners:
+  - name: alice
+    kind: User
+  namespaceOptions:
+    quota: 2
+    additionalMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/warn: restricted
+---
+apiVersion: capsule.clastix.io/v1beta2
+kind: Tenant
+metadata:
+  name: tenant-b
+spec:
+  owners:
+  - name: bob
+    kind: User
+  namespaceOptions:
+    quota: 2
+    additionalMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/warn: restricted
